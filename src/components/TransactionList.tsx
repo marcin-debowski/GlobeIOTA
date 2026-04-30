@@ -1,6 +1,7 @@
 import { useIotaTransactions } from "../hooks/useIotaTransactions";
+import type { IotaTransaction } from "../types";
+
 export const TransactionList = () => {
-  // Wywołujemy nasz własny, czysty hook
   const { data, isPending, error, isFetching } = useIotaTransactions();
 
   if (isPending) return <div className='p-5 bg-gray-950'>Pobieranie danych...</div>;
@@ -15,7 +16,7 @@ export const TransactionList = () => {
         </h2>
 
         <ul className='list-none p-0 grid flex-1 min-h-0 overflow-y-auto grid-cols-1 md:grid-cols-2 gap-x-4'>
-          {data?.map((tx: any) => (
+          {data?.map((tx: IotaTransaction) => (
             <li
               key={tx.digest}
               className=' rounded-8 bg-gray-950 border-gray-400 border p-4 my-2 rounded-xl shadow-2xl '

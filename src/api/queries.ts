@@ -1,5 +1,6 @@
 // Zmienna z adresem API GraphQL (używamy testnetu do testów)
-export const GRAPHQL_ENDPOINT = "https://graphql.testnet.iota.cafe/";
+export const GRAPHQL_ENDPOINT =
+  import.meta.env.VITE_IOTA_GRAPHQL_ENDPOINT || "https://graphql.testnet.iota.cafe/";
 
 // 1. Definiujemy czyste zapytanie GraphQL
 export const TRANSACTIONS_QUERY = `

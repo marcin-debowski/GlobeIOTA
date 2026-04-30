@@ -11,8 +11,6 @@ export const TECH_HUBS = [
   { cityName: "Warszawa", lat: 52.2297, lng: 21.0122 },
 ];
 
-// Zostawiamy funkcję do transakcji bez zmian,
-// ponieważ łuki chcemy nadal lekko rozpraszać, żeby nie "zlały się" w 1 grubą linię
 export function generateArcFromHash(hash: string) {
   let seed1 = 0,
     seed2 = 0;
@@ -37,11 +35,9 @@ export function generateArcFromHash(hash: string) {
   };
 }
 
-// NOWA FUNKCJA: Zwraca po prostu idealne, sztywne centrum miasta
 export function getHubForValidator(name: string) {
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash += name.charCodeAt(i);
 
-  // Zwraca idealny punkt z listy TECH_HUBS
   return TECH_HUBS[hash % TECH_HUBS.length];
 }

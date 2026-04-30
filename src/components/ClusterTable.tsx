@@ -1,6 +1,12 @@
-export const ClusterTable = ({ selectedCluster, setSelectedCluster }: any) => {
+import type { ValidatorCluster } from "../types";
+
+export interface ClusterTableProps {
+  selectedCluster: ValidatorCluster;
+  setSelectedCluster: (cluster: ValidatorCluster | null) => void;
+}
+
+export const ClusterTable = ({ selectedCluster, setSelectedCluster }: ClusterTableProps) => {
   return (
-    // Zmieniamy szerokość na 80, żeby było więcej miejsca na nazwy serwerów
     <div className='bg-gray-950 border border-gray-700 text-white p-5 rounded-xl shadow-2xl w-80 pointer-events-auto'>
       <div className='flex justify-between items-start mb-4 border-b border-gray-700 pb-2'>
         <div>

@@ -1,46 +1,71 @@
-// import Globe from "react-globe.gl";
-
-// function GlobeComponent() {
-//   return (
-//     <div className='flex flex-1 items-center justify-center bg-black text-white flex-col'>
-//       <h2>TUTAJ BĘDZIE GLOBUS 3D 🌍</h2>
-//       <div>
-//         <Globe arcsData={[]} width={600} height={600} />
-//       </div>
-//     </div>
-//   );
-// }
-// export default GlobeComponent;
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import Globe from "react-globe.gl";
 import { generateArcFromHash } from "../utils/geo";
+import { createRoot } from "react-dom/client";
+import { ClusterTable } from "./ClusterTable";
 
 interface GlobeComponentProps {
   transactions: any[];
-  validators: any[]; // Nowy props dla walidatorów
+  validators: any[];
 }
 
 export default function GlobeComponent({ transactions, validators }: GlobeComponentProps) {
+  const [selectedCityName, setSelectedCityName] = useState<string | null>(null);
+  const htmlElementsCache = useRef<{ [key: string]: { el: HTMLDivElement; root: any } }>({});
+
   const arcsData = useMemo(() => {
     if (!transactions) return [];
     return transactions.map((tx) => generateArcFromHash(tx.digest));
   }, [transactions]);
 
+  const activeCluster = useMemo(() => {
+    if (!selectedCityName) return null;
+    return validators.find((v) => v.cityName === selectedCityName) || null;
+  }, [selectedCityName, validators]);
+
   return (
-    <div className='w-2/3'>
+    <div className='w-full relative bg-gray-950 h-lvh flex-1'>
       <Globe
         globeImageUrl='//unpkg.com/three-globe/example/img/earth-dark.jpg'
-        backgroundColor='rgba(0,0,0,0)'
-        // --- WARSTWA 1: WALIDATORZY (PUNKTY) ---
-        pointsData={validators}
-        pointLat={(d: any) => d.lat}
-        pointLng={(d: any) => d.lng}
-        pointColor={(d: any) => d.color}
-        // Wielkość punktu zależy od Stake'a (im silniejszy walidator, tym większy punkt)
-        pointAltitude={(d: any) => Math.max(0.01, (d.stake / 100000) * 0.05)}
-        pointRadius={(d: any) => Math.max(0.2, (d.stake / 100000) * 0.8)}
-        pointsMerge={false}
-        // --- WARSTWA 2: TRANSAKCJE (ŁUKI) ---
+        labelsData={validators}
+        labelLat={(d: any) => d.lat}
+        labelLng={(d: any) => d.lng}
+        labelText={(d: any) => `${d.count}`}
+        labelSize={2.0}
+        labelColor={() => "#ffffff"}
+        labelRotation={() => 0}
+        labelDotRadius={(d: any) => d.count / 3}
+        labelDotOrientation={() => "bottom"}
+        labelsTransitionDuration={0}
+        onLabelClick={(label: any) => {
+          setSelectedCityName(label.cityName);
+        }}
+        htmlElementsData={activeCluster ? [activeCluster] : []}
+        htmlLat={(d: any) => d.lat}
+        htmlLng={(d: any) => d.lng}
+        htmlAltitude={0.02}
+        htmlElement={(d: any) => {
+          if (!htmlElementsCache.current[d.cityName]) {
+            const el = document.createElement("div");
+            el.style.transform = "translate(-50%, 0)";
+
+            htmlElementsCache.current[d.cityName] = {
+              el: el,
+              root: createRoot(el),
+            };
+          }
+
+          const { el, root } = htmlElementsCache.current[d.cityName];
+
+          root.render(
+            <ClusterTable
+              selectedCluster={d}
+              setSelectedCluster={() => setSelectedCityName(null)}
+            />,
+          );
+
+          return el;
+        }}
         arcsData={arcsData}
         arcStartLat={(d: any) => d.startLat}
         arcStartLng={(d: any) => d.startLng}
@@ -51,7 +76,7 @@ export default function GlobeComponent({ transactions, validators }: GlobeCompon
         arcDashGap={0.2}
         arcDashAnimateTime={1500}
         arcAltitudeAutoScale={0.3}
-        width={document.body.clientWidth * 0.66}
+        width={document.body.clientWidth}
         height={document.body.clientHeight}
       />
     </div>

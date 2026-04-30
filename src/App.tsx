@@ -8,10 +8,9 @@ function App() {
   const { validators } = useIotaValidators();
 
   return (
-    <div className='flex h-screen font-sans'>
-      {" "}
-      <TransactionList />
+    <div className='flex h-screen font-sans w-full flex-col '>
       <GlobeComponent transactions={transactions || []} validators={validators || []} />
+      <TransactionList />
     </div>
   );
 }

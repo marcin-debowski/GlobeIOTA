@@ -16,7 +16,7 @@ export function useIotaTransactions() {
       const json = await response.json();
       return json.data.transactionBlocks.nodes;
     },
-    refetchInterval: 3000,
+    refetchInterval: 2000,
     refetchIntervalInBackground: true,
   });
 }

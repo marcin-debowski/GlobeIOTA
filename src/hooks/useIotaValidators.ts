@@ -1,31 +1,44 @@
+// src/hooks/useIotaValidators.ts
 import { useIotaClientQuery } from "@iota/dapp-kit";
 import { useMemo } from "react";
-// Importujemy naszą nową funkcję "lądową"
-import { getDeterministicCityCoord } from "../utils/geo";
+import { getHubForValidator } from "../utils/geo";
 
 export function useIotaValidators() {
-  // Pobieramy dane o walidatorach z oficjalnego API IOTA
   const { data, isPending, error } = useIotaClientQuery("getLatestIotaSystemState");
 
-  const validatorsData = useMemo(() => {
-    // Sprawdzamy czy dane w ogóle do nas dotarły
+  const clusteredValidators = useMemo(() => {
     if (!data || !data.activeValidators) return [];
 
-    return data.activeValidators.map((validator) => {
-      // Używamy nowej funkcji, która przypisze walidatora do realnego miasta
-      const coords = getDeterministicCityCoord(validator.name);
+    // Mapa, gdzie kluczem jest po prostu cityName (np. "Frankfurt")
+    const clusters = new Map<
+      string,
+      { lat: number; lng: number; count: number; cityName: string; serverNames: string[] }
+    >();
 
-      return {
-        id: validator.iotaAddress,
-        name: validator.name,
-        // Zamieniamy siłę głosu na czytelną liczbę
-        stake: Number(validator.votingPower) / 1_000_000,
-        lat: coords.lat,
-        lng: coords.lng,
-        color: "#ffffff", // Białe punkty dla walidatorów
-      };
+    data.activeValidators.forEach((validator) => {
+      // Pobieramy idealny, środkowy punkt z naszej bazy
+      const hub = getHubForValidator(validator.name);
+
+      if (clusters.has(hub.cityName)) {
+        // Miasto już istnieje, dodajemy 1 do licznika
+        const existing = clusters.get(hub.cityName)!;
+        existing.count += 1;
+        existing.serverNames.push(validator.name);
+      } else {
+        // Nowe miasto, tworzymy wpis z licznikiem 1
+        clusters.set(hub.cityName, {
+          lat: hub.lat,
+          lng: hub.lng,
+          count: 1,
+          cityName: hub.cityName,
+          serverNames: [validator.name],
+        });
+      }
     });
+
+    // Zwracamy tablicę do wyświetlenia na globusie
+    return Array.from(clusters.values());
   }, [data]);
 
-  return { validators: validatorsData, isPending, error };
+  return { validators: clusteredValidators, isPending, error };
 }

@@ -12,7 +12,7 @@ GlobeIOTA is an interactive, real-time 3D visualization of the IOTA network. It 
 
 ## 🛠️ Technologies Used
 
-- **Framework**: React 18, Vite
+- **Framework**: React 19, Vite
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **3D Visualization**: `react-globe.gl` (Three.js)

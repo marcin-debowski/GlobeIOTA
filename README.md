@@ -1,73 +1,63 @@
-# React + TypeScript + Vite
+# GlobeIOTA - 3D IOTA Network Visualization
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+GlobeIOTA is an interactive, real-time 3D visualization of the IOTA network. It renders active validators clustered by major geographic tech hubs and displays a live stream of IOTA transactions using animated 3D arcs.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Interactive 3D Globe**: Built with `react-globe.gl` (Three.js), providing a smooth, rotatable, and zoomable view of the Earth.
+- **Live Transaction Stream**: Integrates with the IOTA testnet via GraphQL to fetch and display recent transactions in real-time, visualized as animated arcs across the globe.
+- **Validator Clustering**: Aggregates active IOTA validators into regional hubs, showing node counts and detailed server lists within custom, anchored HTML popups.
+- **Fully Responsive**: Features a modern, mobile-friendly UI crafted with Tailwind CSS.
+- **Strict TypeScript**: Ensures robust rendering and data handling.
 
-## React Compiler
+## 🛠️ Technologies Used
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Framework**: React 18, Vite
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **3D Visualization**: `react-globe.gl` (Three.js)
+- **Data Fetching**: `@tanstack/react-query`
+- **IOTA Ecosystem**: `@iota/dapp-kit`, `@iota/iota-sdk`
 
-## Expanding the ESLint configuration
+## ⚙️ Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Make sure you have Node.js and npm (or yarn/pnpm) installed on your system.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. **Clone the repository:**
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+   ```bash
+   git clone https://github.com/marcin-debowski/GlobeIOTA.git
+   cd GlobeIOTA
+   ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+2. **Install dependencies:**
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+   ```bash
+   npm install
+   ```
+
+3. **Environment Setup:**
+   Create a `.env` file in the root directory and configure your IOTA RPC and GraphQL endpoints (defaults safely to testnet URLs if left empty, but specifying them is recommended):
+
+   ```env
+   VITE_IOTA_GRAPHQL_ENDPOINT=https://graphql.testnet.iota.cafe/
+   VITE_IOTA_RPC_URL=https://fullnode.testnet.iota.cafe:443
+   ```
+
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:5173](http://localhost:5173) to view it in your browser.
+
+## 🔒 Security Notes
+
+The project uses `.env` variables to prevent accidental exposure of your RPC endpoints or API keys in the GitHub repository. For production deployments, it's recommended to proxy RPC requests through your own backend/serverless functions or use strict domain whitelisting (CORS) at your RPC provider level to completely secure your nodes.
+
+## 📄 License
+
+This project was created as a recruitment task / proof of concept. Feel free to explore and modify.
